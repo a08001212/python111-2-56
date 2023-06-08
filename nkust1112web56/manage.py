@@ -2,7 +2,12 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+import threading, time
+# from mysite.oil_price_update import update_oil_price
+def update_oil():
+    time.sleep(5)
+    # update_oil_price()
+    time.sleep(60 * 60 * 24) # update data every day
 
 def main():
     """Run administrative tasks."""

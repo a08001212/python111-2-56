@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import requests, json
 from mysite import models           # 匯入 mysite 資料夾底下 models.py 中所有的類別
+from bs4 import BeautifulSoup
+
 import random   #匯入亂數模組
 
 def index(request):
-    mynames = ["楠梓金城武", "花美男", "高科邊緣人", "高雄獨行俠"]
-    myname = random.choice(mynames)     #從mynames串列中隨機取出其中一個資料項目
+    myname = "王欽弘"
     return render(request, "index.html", locals())
 
 def all_data(request):
@@ -63,3 +64,44 @@ def stock300list(request):
     data = models.StockInfo.objects.filter(price__gte=300).order_by('-price')
     numbers = len(data)
     return render(request, "stocklist.html", locals())
+
+def oil_price_update(request):
+    models.Oil.objects.all().delete()
+    r = requests.get(
+        "https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML").text.splitlines()
+    for i in range(len(r)):
+        if r[i]== "    <產品名稱>98無鉛汽油</產品名稱>":
+            price_line = r[i+5]
+            #    <參考牌價>28.5</參考牌價>
+
+            models.Oil(
+                name="98無鉛汽油",
+                price=float(price_line[10:-7])
+            ).save()
+        elif r[i] == "    <產品名稱>95無鉛汽油</產品名稱>":
+            price_line = r[i+5]
+            #    <參考牌價>28.5</參考牌價>
+
+            models.Oil(
+                name="95無鉛汽油",
+                price=float(price_line[10:-7])
+            ).save()
+        elif r[i] == "    <產品名稱>92無鉛汽油</產品名稱>":
+            price_line = r[i+5]
+            #    <參考牌價>28.5</參考牌價>
+
+            models.Oil(
+                name="95無鉛汽油",
+                price=float(price_line[10:-7])
+            ).save()
+        elif r[i] == "    <產品名稱>超級柴油</產品名稱>":
+            models.Oil(
+                name="超級柴油",
+                price=float(price_line[10:-7])
+            ).save()
+    return HttpResponse("<h1>Updated oil price</h1>")
+
+def oil_price(request):
+    data = models.Oil.objects.all()
+    numbers = len(data)
+    return render(request, "oil_price.html", locals())
