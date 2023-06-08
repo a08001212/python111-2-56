@@ -13,5 +13,7 @@ urlpatterns = [
     path('filter/', views.filtered_data), #只顯示超過5台可用自行車的站台資訊
     path('admin/', admin.site.urls),
     path('update_oil_price/', views.oil_price_update),
-    path('oil_price/', views.oil_price)
+    path('oil_price/', views.oil_price),
+    path('update_codeforces/', views.update_codeforces),
+    path('codeforces_red_name/', views.codeforces_red_name)
 ]

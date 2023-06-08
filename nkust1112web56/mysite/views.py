@@ -3,6 +3,7 @@ from django.http import HttpResponse
 import requests, json
 from mysite import models           # 匯入 mysite 資料夾底下 models.py 中所有的類別
 from bs4 import BeautifulSoup
+import time
 
 import random   #匯入亂數模組
 
@@ -91,7 +92,7 @@ def oil_price_update(request):
             #    <參考牌價>28.5</參考牌價>
 
             models.Oil(
-                name="95無鉛汽油",
+                name="92無鉛汽油",
                 price=float(price_line[10:-7])
             ).save()
         elif r[i] == "    <產品名稱>超級柴油</產品名稱>":
@@ -105,3 +106,59 @@ def oil_price(request):
     data = models.Oil.objects.all()
     numbers = len(data)
     return render(request, "oil_price.html", locals())
+
+
+
+def update_codeforces(request):
+    urls = "https://codeforces.com/ratings/page/{}"
+    models.Codeforces_data.objects.all().delete()
+
+    for page in range(1, 600):
+        url = urls.format(page)
+        html = requests.get(url).text
+        soup = BeautifulSoup(html, "html.parser")
+        # sel = "#pageptlist > div > div > div > div.d-txt > div.mtitle > a"
+        table = soup.find_all("table")[5]
+        score = 0
+        ranking = 0
+        name = ""
+        for row in table.find_all("tr"):
+            count = 0
+            for elem in row.find_all('td'):
+                if count > 4:
+                    continue
+
+                if count % 4 == 0:
+                    ranking = int(elem.text.strip())
+                elif count % 4 == 1:
+                    name = elem.text.strip()
+                elif count % 4 == 3:
+                    score = int(elem.text.strip())
+                    if score < 2400:
+                        return HttpResponse("<h1>updated data.</h1>")
+                    models.Codeforces_data(
+                        name = name,
+                        score = score,
+                        ranking = ranking
+                    ).save()
+                count += 1
+
+        # for tag in tags:
+        #     print(count)
+        #     print("=" * 10)
+        #     count += 1
+        #     print(tag)
+
+        # titles = soup.select(sel)
+        # for title in titles:
+        #     print(title.text)
+        # new_rec = models.NKUSTnews(title=title.text.strip())
+        # new_rec.save()
+        time.sleep(3)  # 這是每一頁讀取之間的間隔，絕對不能省略
+        print("page:{}".format(page))
+
+def codeforces_red_name(request):
+    data = models.Codeforces_data.objects.all()
+    size = len(data)
+    return render(request, "codeforces_red_name.html", locals())
+

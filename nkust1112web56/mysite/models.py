@@ -46,3 +46,12 @@ class Oil(models.Model):
     price = models.FloatField(default=0)
     def __str__(self):
         return self.name
+
+class Codeforces_data(models.Model):
+    name = models.CharField(max_length=255)
+    score = models.IntegerField(default=0)
+    ranking = models.IntegerField(default=0)
+    def __str__(self):
+        return self.name
+    class Meta:
+        ordering = ['ranking']
