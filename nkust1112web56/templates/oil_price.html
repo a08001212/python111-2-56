@@ -3,41 +3,17 @@
 {% block title %}欽弘的網站{% endblock %}
 
 {% block headmessage %}
-<h2>油價比較圖表</h2>
+<h2>油價</h2>
 {% endblock %}
 
 {% block content %}
-<div>
-    <canvas id="myChart" width="800" height="300"></canvas>
-  </div>
-  <script>
-    const ctx = document.getElementById('myChart');
-  
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: [
-        {% for item in data %}
-           '{{item.name}}',    
-        {% endfor %}
-        ],
-        datasets: [{
-          label: '油價（台幣）',
-          data: [
-          {% for item in data %}
-           {{item.price}},    
-        {% endfor %}
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  </script>
+<table class="table table-striped">
+    <tr><td>品名</td><td>價格</td></tr>
+    {% for item in data %}
+        <tr>
+            <td>{{item.name}}</td>
+            <td>{{item.price}}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}

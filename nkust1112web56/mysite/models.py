@@ -1,5 +1,4 @@
 from django.db import models
-
 class HBicycleData(models.Model):
     sna = models.CharField(max_length=100)
     sbi = models.IntegerField(default=0)
@@ -55,3 +54,10 @@ class Codeforces_data(models.Model):
         return self.name
     class Meta:
         ordering = ['ranking']
+
+class Cpe(models.Model):
+    name = models.CharField(max_length=30)
+    average = models.FloatField(default=.0)
+
+    def __str__(self):
+        return self.name

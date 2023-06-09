@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}欽弘的網站{% endblock %}
+
+{% block headmessage %}
+<h2>cpe歷屆平均題數</h2>
+{% endblock %}
+
+{% block content %}
+    資料來源: <a href="https://cpe.cse.nsysu.edu.tw/history.php">https://cpe.cse.nsysu.edu.tw/history.php</a>
+    <br />
+
+    <div>
+        <canvas id="myChart" width="800" height="300" ></canvas>
+      </div>
+      <script>
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: [
+            {% for item in data %}
+               '{{item.name}}',
+            {% endfor %}
+            ],
+            datasets: [{
+              label: '平均題數',
+              data: [
+              {% for item in data %}
+               {{item.average}},
+            {% endfor %}
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: false
+              }
+            }
+          }
+        });
+      </script>
+{% endblock %}

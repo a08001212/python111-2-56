@@ -2,12 +2,20 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-import threading, time
+import threading, time, requests
 # from mysite.oil_price_update import update_oil_price
-def update_oil():
+def update():
     time.sleep(5)
-    # update_oil_price()
-    time.sleep(60 * 60 * 24) # update data every day
+    count = 0
+    while True:
+        if count == 0:
+            requests.get("http://127.0.0.1:8000/update_oil_price/")
+            print("update oil price.")
+        requests.get("http://127.0.0.1:8000/update_codeforces/")
+        print("update codeforces data.")
+        count += 1
+        count %= 24
+        time.sleep(60 * 60) # update data every day
 
 def main():
     """Run administrative tasks."""
@@ -23,5 +31,12 @@ def main():
     execute_from_command_line(sys.argv)
 
 
+
 if __name__ == '__main__':
+    # th = threading.Thread(target=update)
+    # th.start()
     main()
+    # th.stop()
+
+
+

@@ -103,7 +103,7 @@ def oil_price_update(request):
     return HttpResponse("<h1>Updated oil price</h1>")
 
 def oil_price(request):
-    data = models.Oil.objects.all()
+    data = models.Oil.objects.all()[:4]
     numbers = len(data)
     return render(request, "oil_price.html", locals())
 
@@ -143,17 +143,6 @@ def update_codeforces(request):
                     ).save()
                 count += 1
 
-        # for tag in tags:
-        #     print(count)
-        #     print("=" * 10)
-        #     count += 1
-        #     print(tag)
-
-        # titles = soup.select(sel)
-        # for title in titles:
-        #     print(title.text)
-        # new_rec = models.NKUSTnews(title=title.text.strip())
-        # new_rec.save()
         time.sleep(3)  # 這是每一頁讀取之間的間隔，絕對不能省略
         print("page:{}".format(page))
 
@@ -162,3 +151,43 @@ def codeforces_red_name(request):
     size = len(data)
     return render(request, "codeforces_red_name.html", locals())
 
+def update_cpe(request):
+    models.Cpe.objects.all().delete()
+    def get_cpe_average(url):
+        html = requests.get(url).text
+        soup = BeautifulSoup(html, "html.parser")
+        ul = soup.find_all("ul")[-1]
+        # print(len(ul.find_all('li')[-1].text.strip()))
+        return float(ul.find_all('li')[-1].text.strip()[7:])
+
+    # models.NKUSTnews.objects.all().delete()
+    urls = "https://cpe.cse.nsysu.edu.tw/history.php"
+    html = requests.get(urls).text
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.find("table", {"class": "mtable"})
+    for row in table.find_all("tr")[1:]:
+        data = row.find_all('td')
+        date = data[0].text.strip()
+        # print(date[:4])
+        # date
+        # data[0].text.strip()
+
+        if int(data[0].text.strip()[0:4]) <= 2013:
+            break
+
+        d = data[1].find_all('a', href=True)
+        if len(d) > 1:
+            url = d[0]['href']
+            avg = get_cpe_average(url)
+            models.Cpe(
+                name = data[0].text.strip(),
+                average = avg
+            ).save()
+
+    return HttpResponse("<h1>update sessusful</h1>")
+
+
+def cpe(request):
+    data = models.Cpe.objects.all()[::-1]
+    size = len(data)
+    return render(request, "cpe.html", locals())

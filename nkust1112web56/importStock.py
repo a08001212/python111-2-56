@@ -6,6 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nkust1112web56.settings')
 django.setup()
 from mysite import models
 
+
 models.StockInfo.objects.all().delete()
 url = "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_AVG_ALL"
 r = requests.get(url).text

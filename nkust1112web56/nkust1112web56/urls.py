@@ -15,5 +15,7 @@ urlpatterns = [
     path('update_oil_price/', views.oil_price_update),
     path('oil_price/', views.oil_price),
     path('update_codeforces/', views.update_codeforces),
-    path('codeforces_red_name/', views.codeforces_red_name)
+    path('codeforces_red_name/', views.codeforces_red_name),
+    path('update_cpe/', views.update_cpe),
+    path('cpe/', views.cpe),
 ]
