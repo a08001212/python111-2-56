@@ -18,4 +18,5 @@ urlpatterns = [
     path('codeforces_red_name/', views.codeforces_red_name),
     path('update_cpe/', views.update_cpe),
     path('cpe/', views.cpe),
+    path('update_all_data/', views.update_all_data),
 ]

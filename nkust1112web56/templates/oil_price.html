@@ -7,13 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<table class="table table-striped">
-    <tr><td>品名</td><td>價格</td></tr>
-    {% for item in data %}
-        <tr>
-            <td>{{item.name}}</td>
-            <td>{{item.price}}</td>
-        </tr>
-    {% endfor %}
-</table>
+    資料來源<a href="https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML">https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML</a>
+    <br />
+    <table class="table table-striped">
+        <tr><td>品名</td><td>價格</td></tr>
+        {% for item in data %}
+            <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.price}}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

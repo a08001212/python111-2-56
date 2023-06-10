@@ -191,3 +191,12 @@ def cpe(request):
     data = models.Cpe.objects.all()[::-1]
     size = len(data)
     return render(request, "cpe.html", locals())
+
+def update_all_data(request):
+    def update():
+        request.get("127.0.0.1:8000/update_oil_price/")
+        request.get("127.0.0.1:8000/update_codeforces/")
+        request.get("127.0.0.1:8000/update_cpe")
+
+        print("Updated all data.")
+    return HttpResponse("<h1>updating data</h1>")
