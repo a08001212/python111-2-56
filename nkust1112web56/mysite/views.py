@@ -89,13 +89,12 @@ def oil_price_update():
             ).save()
         elif r[i] == "    <產品名稱>92無鉛汽油</產品名稱>":
             price_line = r[i+5]
-            #    <參考牌價>28.5</參考牌價>
-
             models.Oil(
                 name="92無鉛汽油",
                 price=float(price_line[10:-7])
             ).save()
         elif r[i] == "    <產品名稱>超級柴油</產品名稱>":
+            price_line = r[i+5]
             models.Oil(
                 name="超級柴油",
                 price=float(price_line[10:-7])
@@ -103,7 +102,7 @@ def oil_price_update():
     # return HttpResponse("<h1>Updated oil price</h1>")
 
 def oil_price(request):
-    data = models.Oil.objects.all()[:4]
+    data = models.Oil.objects.all()
     numbers = len(data)
     return render(request, "oil_price.html", locals())
 
