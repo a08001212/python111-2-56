@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import requests, json
 from mysite import models           # 匯入 mysite 資料夾底下 models.py 中所有的類別
 from bs4 import BeautifulSoup
-import time
+import time, threading
 
 import random   #匯入亂數模組
 
@@ -66,7 +66,7 @@ def stock300list(request):
     numbers = len(data)
     return render(request, "stocklist.html", locals())
 
-def oil_price_update(request):
+def oil_price_update():
     models.Oil.objects.all().delete()
     r = requests.get(
         "https://vipmbr.cpc.com.tw/CPCSTN/ListPriceWebService.asmx/getCPCMainProdListPrice_XML").text.splitlines()
@@ -100,7 +100,7 @@ def oil_price_update(request):
                 name="超級柴油",
                 price=float(price_line[10:-7])
             ).save()
-    return HttpResponse("<h1>Updated oil price</h1>")
+    # return HttpResponse("<h1>Updated oil price</h1>")
 
 def oil_price(request):
     data = models.Oil.objects.all()[:4]
@@ -109,7 +109,7 @@ def oil_price(request):
 
 
 
-def update_codeforces(request):
+def update_codeforces():
     urls = "https://codeforces.com/ratings/page/{}"
     models.Codeforces_data.objects.all().delete()
 
@@ -151,7 +151,7 @@ def codeforces_red_name(request):
     size = len(data)
     return render(request, "codeforces_red_name.html", locals())
 
-def update_cpe(request):
+def update_cpe():
     models.Cpe.objects.all().delete()
     def get_cpe_average(url):
         html = requests.get(url).text
@@ -184,7 +184,7 @@ def update_cpe(request):
                 average = avg
             ).save()
 
-    return HttpResponse("<h1>update sessusful</h1>")
+    # return HttpResponse("<h1>update sessusful</h1>")
 
 
 def cpe(request):
@@ -194,9 +194,15 @@ def cpe(request):
 
 def update_all_data(request):
     def update():
-        request.get("127.0.0.1:8000/update_oil_price/")
-        request.get("127.0.0.1:8000/update_codeforces/")
-        request.get("127.0.0.1:8000/update_cpe")
-
-        print("Updated all data.")
+        oil_price_update()
+        print("oil price update sessusful.")
+        # request.get("127.0.0.1:8000/update_oil_price/")
+        update_codeforces()
+        print("codeforces update sessusful.")
+        # request.get("127.0.0.1:8000/update_codeforces/")
+        update_cpe()
+        # request.get("127.0.0.1:8000/update_cpe")
+        print("update cpe data.\nUpdated all data.")
+    th = threading.Thread(target = update)
+    th.start()
     return HttpResponse("<h1>updating data</h1>")
